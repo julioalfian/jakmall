@@ -398,7 +398,7 @@
                       v-if="step != totalStep"
                       @click="nextStep"
                     >
-                      Continue to Payment
+                      Pay with {{form.payment}}
                     </button>
                   </div>
                 </div>
