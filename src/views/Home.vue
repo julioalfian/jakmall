@@ -230,6 +230,7 @@
                       </div>
                     </div>
                   </div>
+                  <span class="errorText" :v-if="errorText">{{errorText}}</span>
                 </div>
                 <!-- summary -->
                 <div class="payment-content__right">
@@ -284,7 +285,7 @@
               <div class="payment-content__container">
                 <div class="payment-content__left">
                   <h1 class="mb-30">Shipment</h1>
-                  <div class="payment-content__left__row align-center mb-60">
+                  <div class="payment-content__left__row align-center mb-60 flex-wrap">
                     <div
                       class="form-group form-select"
                       v-for="item in shipmentList"
@@ -345,6 +346,7 @@
                       </label>
                     </div>
                   </div>
+                  <span class="errorText" :v-if="errorText">{{errorText}}</span>
                 </div>
                 <div class="payment-content__right">
                   <div class="payment-content__right__top">
@@ -510,6 +512,7 @@ export default {
   },
   data() {
     return {
+      name: '',
       totalStep: 3,
       step: 1,
       btnNext: false,
@@ -573,7 +576,18 @@ export default {
       formFocusAddress: false,
       formFocusDropName: false,
       formFocusDropPhone: false,
+      errorText: '',
     };
+  },
+  mounted() {
+    if (localStorage.email) {
+      this.form.email = localStorage.email;
+    }
+  },
+  watch: {
+    name(newEmail) {
+      localStorage.email = newEmail;
+    }
   },
   computed: {
     totalHarga: function () {
@@ -601,30 +615,40 @@ export default {
     nextStep: function () {
       if (this.step == 1) {
         if (!this.form.email) {
+          this.errorText = '*the fields is required'
           return false;
         } else if (!this.form.phone) {
+          this.errorText = '*the fields is required'
           return false;
         } else if (!this.form.address) {
+          this.errorText = '*the fields is required'
           return false;
         } else if (this.asDropshipper) {
           if (!this.form.dropName) {
+            this.errorText = '*the fields is required'
             return false;
           } else if (!this.form.dropPhone) {
+            this.errorText = '*the fields is required'
             return false;
           } else if (document.querySelector(".error")) {
+            this.errorText = '*please check the fields'
             return false;
           }
         } else if (document.querySelector(".error")) {
+          this.errorText = '*please check the fields'
           return false;
         }
       }
       if (this.step == 2) {
         if (!this.form.shipment) {
+          this.errorText = '*the fields is required'
           return false;
         } else if (!this.form.payment) {
+          this.errorText = '*the fields is required'
           return false;
         }
       }
+      this.errorText = ''
       this.step++;
       this.randomOrderId();
     },
@@ -741,6 +765,10 @@ export default {
   margin: 0 auto;
   margin-top: 20px;
   width: fit-content;
+  @media screen and (max-width: 767px){
+    padding : 16px
+    border-radius: 30px;
+  }
 }
 
 .payment__nav__item {
@@ -749,6 +777,11 @@ export default {
   margin-right: 21px;
   padding-right: 22px;
   position: relative;
+  @media screen and (max-width: 767px){
+    font-size : 12px
+    margin-right: 15px;
+    padding-right: 15px;
+  }
 
   &:after {
     position: absolute;
@@ -757,6 +790,9 @@ export default {
     top: 50%;
     transform: translateY(-50%);
     color: color-orange;
+    @media screen and (max-width: 767px){
+      font-size : 12px
+    }
   }
 
   &:last-child {
@@ -781,6 +817,11 @@ export default {
   justify-content: center;
   align-items: center;
   transition: 0.3s;
+  @media screen and (max-width: 767px){
+    width : 18px
+    height : 18px
+    font-size : 12px
+  }
 }
 
 .payment__nav__item__text {
@@ -797,12 +838,17 @@ export default {
 .payment__bg-box {
   margin-top: -35px;
   z-index: -1;
-  width: 100%;
+  //width: 100%;
   height: auto;
   background: white;
   box-shadow: 2px 10px 20px rgba(255, 138, 0, 0.1);
   border-radius: 4px;
   padding: 30px 20px 20px 40px;
+  @media screen and (max-width: 768px){
+    margin-top : -15px
+    padding : 20px
+    padding-top : 30px
+  }
 }
 
 .payment-content__back {
@@ -832,11 +878,18 @@ export default {
 .payment-content__container {
   margin-top: 24px;
   display: flex;
+  @media screen and (max-width: 768px){
+    flex-wrap : wrap
+  }
 }
 
 .payment-content__left {
   flex: 1;
   min-height: 460px;
+  @media screen and (max-width: 768px){
+    width : 100%
+    min-height: 310px;
+  }
 }
 
 .payment-content__left__top {
@@ -844,6 +897,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-right: 57px;
+  @media screen and (max-width: 768px){
+    flex-wrap : wrap
+  }
 }
 
 .payment-content__left__bottom {
@@ -851,21 +907,38 @@ export default {
 }
 
 .payment-content__right {
-  width: 280px;
+  //width: 280px;
+  width: 27%
+  @media screen and (max-width: 768px){
+    width : 100%
+    margin-top : 20px
+  }
 }
 
 .payment-content__left__row {
   display: flex;
   margin-right: 30px;
+  @media screen and (max-width: 768px){
+    flex-wrap : wrap
+    margin-right: 0;
+  }
 }
 
 .payment-content__left__row__left {
   width: 57%;
   margin-right: 3%;
+  @media screen and (max-width: 768px){
+    width : 100%
+    margin-right : 0
+  }
 }
 
 .payment-content__left__row__right {
   width: 40%;
+  @media screen and (max-width: 768px){
+    width : 100%
+    margin-top : 20px
+  }
 }
 
 .addressLength {
@@ -938,7 +1011,7 @@ export default {
 .button-next {
   width: 100%;
   border: 0;
-  padding: 20px 0;
+  padding: 20px 8px;
   text-align: center;
   font-weight: 500;
   font-size: 18px;
