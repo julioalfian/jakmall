@@ -429,7 +429,7 @@
                         </p>
                       </div>
                       <div class="payment-content__back">
-                        <a @click.prevent="prevStep">
+                        <a @click.prevent="removeLocalStorage">
                           <ArrowLeft />
                           Go to homepage
                         </a>
@@ -512,7 +512,6 @@ export default {
   },
   data() {
     return {
-      name: '',
       totalStep: 3,
       step: 1,
       btnNext: false,
@@ -580,15 +579,18 @@ export default {
     };
   },
   mounted() {
-    if (localStorage.email) {
-      this.form.email = localStorage.email;
+    if (JSON.parse(window.localStorage.getItem('form'))) {
+      let data = JSON.parse(window.localStorage.getItem('form'))
+      this.form = data;
+      this.step = localStorage.step
+      this.form.orderID = localStorage.orderId
     }
   },
-  watch: {
-    name(newEmail) {
-      localStorage.email = newEmail;
-    }
-  },
+  //watch: {
+  //  step(val){
+  //    localStorage.step = val;  
+  //  },
+  //},
   computed: {
     totalHarga: function () {
       if (this.asDropshipper) {
@@ -610,6 +612,7 @@ export default {
           );
         }
         this.form.orderID = text
+        window.localStorage.setItem('orderId', this.form.orderID);
       }
     },
     nextStep: function () {
@@ -648,9 +651,12 @@ export default {
           return false;
         }
       }
+      let data = JSON.stringify(this.form)
       this.errorText = ''
+      window.localStorage.setItem('form', data);
       this.step++;
       this.randomOrderId();
+      localStorage.step = this.step;
     },
     prevStep: function () {
       this.step--;
@@ -748,6 +754,12 @@ export default {
         this.form.shipmentEstimate = "1 day";
       }
     },
+    removeLocalStorage: function(){
+      localStorage.removeItem('form');
+      localStorage.removeItem('step');
+      localStorage.removeItem('orderId');
+      location.reload();
+    }
   },
 };
 </script>
